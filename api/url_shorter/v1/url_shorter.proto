@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package url_shorter.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/phpgao/durl_backend/api/url_shorter/v1;v1";
+
+// UrlShortenerService provides functionality for creating short URLs.
+service UrlShortenerService {
+  // CreateUrlShortener creates a new short URL based on the provided long URL, short key, and biz tag.
+  rpc CreateShortUrl(CreateUrlRequest) returns (CreateUrlReply) {
+    option (google.api.http) = {
+      post: "/v1/create/url"
+      body: "*"
+    };
+  }
+
+  // GetRedirectURL retrieves the long URL associated with the given short URL and returns it to the client.
+  rpc GetRedirectURL(JumpRequest) returns (JumpReply) {
+    option (google.api.http) = {
+      get: "/go/{url}"
+    };
+  }
+}
+
+// CreateUrlRequest represents the input parameters required to create a new short URL.
+message CreateUrlRequest {
+  // The original long URL to be shortened (required).
+  string url = 1;
+  // The custom short key for the short URL (optional).
+  string short_key = 2 [json_name = "short_key"];
+  // The business ID associated with the short URL (optional).
+  int64 biz_id = 3 [json_name = "biz_id"];
+  // The expiration timestamp for the short URL (optional).
+  int64 expired_at = 4 [json_name = "expired_at"];
+}
+
+// CreateUrlReply contains the generated short URL as a response.
+message CreateUrlReply {
+  // The created short URL.
+  string url = 1;
+}
+
+//// BizRequest represents the input parameters required to retrieve a business ID.
+//message BizRequest {
+//  string biz_tag = 1; // The business tag to be used for the lookup.
+//}
+//
+//// BizReply contains the retrieved business ID as a response.
+//message BizReply {
+//  int64 biz_id = 1; // The business ID associated with the given business tag.
+//}
+
+// JumpRequest represents the input parameters required to retrieve the long URL associated with a short URL.
+message JumpRequest {
+  // The short URL to be used for the lookup (required)..
+  string url = 1;
+}
+
+// JumpReply contains the retrieved long URL as a response.
+message JumpReply {
+  // The ID associated with the short URL.
+  int64 id = 1;
+  // The original long URL associated with the short URL.
+  string url = 2;
+}

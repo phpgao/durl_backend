@@ -1,0 +1,85 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: UrlShortenerService API
+    description: UrlShortenerService provides functionality for creating short URLs.
+    version: 0.0.1
+paths:
+    /go/{url}:
+        get:
+            tags:
+                - UrlShortenerService
+            description: GetRedirectURL retrieves the long URL associated with the given short URL and returns it to the client.
+            operationId: UrlShortenerService_GetRedirectURL
+            parameters:
+                - name: url
+                  in: path
+                  description: The short URL to be used for the lookup (required)..
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/url_shorter.v1.JumpReply'
+    /v1/create/url:
+        post:
+            tags:
+                - UrlShortenerService
+            description: CreateUrlShortener creates a new short URL based on the provided long URL, short key, and biz tag.
+            operationId: UrlShortenerService_CreateShortUrl
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/url_shorter.v1.CreateUrlRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/url_shorter.v1.CreateUrlReply'
+components:
+    schemas:
+        url_shorter.v1.CreateUrlReply:
+            type: object
+            properties:
+                url:
+                    type: string
+                    description: The created short URL.
+            description: CreateUrlReply contains the generated short URL as a response.
+        url_shorter.v1.CreateUrlRequest:
+            type: object
+            properties:
+                url:
+                    type: string
+                    description: The original long URL to be shortened (required).
+                short_key:
+                    type: string
+                    description: The custom short key for the short URL (optional).
+                biz_id:
+                    type: string
+                    description: The business ID associated with the short URL (optional).
+                expired_at:
+                    type: string
+                    description: The expiration timestamp for the short URL (optional).
+            description: CreateUrlRequest represents the input parameters required to create a new short URL.
+        url_shorter.v1.JumpReply:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The ID associated with the short URL.
+                url:
+                    type: string
+                    description: The original long URL associated with the short URL.
+            description: JumpReply contains the retrieved long URL as a response.
+tags:
+    - name: UrlShortenerService
